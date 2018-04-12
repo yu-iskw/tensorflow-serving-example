@@ -1,0 +1,18 @@
+name: tensorflow-serving-example
+channels:
+    - https://conda.anaconda.org/menpo
+    - conda-forge
+dependencies:
+    - python=2.7
+    - scikit-learn=0.19.0
+    - protobuf
+    - openblas
+    - scipy
+    - numpy
+    - pandas
+    - pillow
+    - pip:
+        - grpcio
+        - grpcio-tools
+        - tensorflow==1.7.0
+        - tensorflow-serving-api==1.5.0
