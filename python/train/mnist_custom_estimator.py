@@ -90,10 +90,23 @@ def cnn_model_fn(features, labels, mode):
 
 
 def serving_input_receiver_fn():
-    inputs = {
-        INPUT_FEATURE: tf.placeholder(tf.float32, [None, 28, 28, 1]),
+    """
+    This is used to define inputs to serve the model.
+
+    :return: ServingInputReciever
+    """
+    reciever_tensors = {
+        # The size of input image is flexible.
+        INPUT_FEATURE: tf.placeholder(tf.float32, [None, None, None, 1]),
     }
-    return tf.estimator.export.ServingInputReceiver(inputs, inputs)
+
+    # Convert give inputs to adjust to the model.
+    features = {
+        # Resize given images.
+        INPUT_FEATURE: tf.image.resize_images(reciever_tensors[INPUT_FEATURE], [28, 28]),
+    }
+    return tf.estimator.export.ServingInputReceiver(receiver_tensors=reciever_tensors,
+                                                    features=features)
 
 
 def main(_):
