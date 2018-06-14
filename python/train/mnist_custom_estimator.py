@@ -13,12 +13,12 @@ tf.app.flags.DEFINE_string('saved_dir', './models/', 'Dir to save a model for TF
 FLAGS = tf.app.flags.FLAGS
 
 INPUT_FEATURE = 'image'
+NUM_CLASSES = 10
 
 
 def cnn_model_fn(features, labels, mode):
     """Model function for CNN."""
     # Input Layer
-    #input_layer = tf.reshape(features["x"], [-1, 28, 28, 1])
     input_layer = features[INPUT_FEATURE]
 
     # First convolutional Layer and pooling layer
@@ -54,7 +54,7 @@ def cnn_model_fn(features, labels, mode):
         inputs=dense, rate=0.4, training=(mode == tf.estimator.ModeKeys.TRAIN))
 
     # Logits layer
-    logits = tf.layers.dense(inputs=dropout, units=10)
+    logits = tf.layers.dense(inputs=dropout, units=NUM_CLASSES)
 
     predictions = {
         # Generate predictions (for PREDICT and EVAL mode)
@@ -90,10 +90,23 @@ def cnn_model_fn(features, labels, mode):
 
 
 def serving_input_receiver_fn():
-    inputs = {
-        INPUT_FEATURE: tf.placeholder(tf.float32, [None, 28, 28, 1]),
+    """
+    This is used to define inputs to serve the model.
+
+    :return: ServingInputReciever
+    """
+    reciever_tensors = {
+        # The size of input image is flexible.
+        INPUT_FEATURE: tf.placeholder(tf.float32, [None, None, None, 1]),
     }
-    return tf.estimator.export.ServingInputReceiver(inputs, inputs)
+
+    # Convert give inputs to adjust to the model.
+    features = {
+        # Resize given images.
+        INPUT_FEATURE: tf.image.resize_images(reciever_tensors[INPUT_FEATURE], [28, 28]),
+    }
+    return tf.estimator.export.ServingInputReceiver(receiver_tensors=reciever_tensors,
+                                                    features=features)
 
 
 def main(_):

@@ -11,8 +11,10 @@ dependencies:
     - numpy
     - pandas
     - pillow
+    - h5py
     - pip:
         - grpcio
         - grpcio-tools
         - tensorflow==1.7.0
         - tensorflow-serving-api==1.5.0
+        - flake8

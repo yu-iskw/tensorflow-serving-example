@@ -1,0 +1,6 @@
+MNIST-data/
+models_for_serving/
+!models_for_serving/.gitkeep
+python/tensorflow/
+python/tensorflow_serving/
+models/
