@@ -13,6 +13,7 @@ tf.app.flags.DEFINE_string('saved_dir', './models/', 'Dir to save a model for TF
 FLAGS = tf.app.flags.FLAGS
 
 INPUT_FEATURE = 'image'
+NUM_CLASSES = 10
 
 
 def serving_input_receiver_fn():
@@ -61,7 +62,7 @@ def main(_):
         feature_columns=feature_columns,
         hidden_units=[256, 32],
         optimizer=tf.train.AdamOptimizer(1e-4),
-        n_classes=10,
+        n_classes=NUM_CLASSES,
         dropout=0.1,
         model_dir=FLAGS.model_dir
     )

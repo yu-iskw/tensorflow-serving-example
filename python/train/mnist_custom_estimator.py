@@ -13,6 +13,7 @@ tf.app.flags.DEFINE_string('saved_dir', './models/', 'Dir to save a model for TF
 FLAGS = tf.app.flags.FLAGS
 
 INPUT_FEATURE = 'image'
+NUM_CLASSES = 10
 
 
 def cnn_model_fn(features, labels, mode):
@@ -53,7 +54,7 @@ def cnn_model_fn(features, labels, mode):
         inputs=dense, rate=0.4, training=(mode == tf.estimator.ModeKeys.TRAIN))
 
     # Logits layer
-    logits = tf.layers.dense(inputs=dropout, units=10)
+    logits = tf.layers.dense(inputs=dropout, units=NUM_CLASSES)
 
     predictions = {
         # Generate predictions (for PREDICT and EVAL mode)
