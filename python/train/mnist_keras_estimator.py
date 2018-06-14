@@ -11,12 +11,12 @@ FLAGS = tf.app.flags.FLAGS
 
 # This is used to specify the input parameter.
 INPUT_FEATURE = 'image'
-INPUT_SHAPE = 28*28*1
+INPUT_SHAPE = 28 * 28 * 1
 NUM_CLASSES = 10
 
 
 def get_keras_model():
-    inputs = layers.Input(shape=(INPUT_SHAPE, ), name=INPUT_FEATURE)
+    inputs = layers.Input(shape=(INPUT_SHAPE,), name=INPUT_FEATURE)
     dense256 = layers.Dense(256, activation='relu')(inputs)
     dense32 = layers.Dense(32, activation='relu')(dense256)
     outputs = layers.Dense(NUM_CLASSES, activation='softmax')(dense32)

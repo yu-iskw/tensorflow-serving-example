@@ -26,6 +26,9 @@ create-conda:
 remove-conda:
 	conda env remove -y -n $(NAME)
 
+lint:
+	flake8
+
 train-custom-estimator:
 	rm -fr ./models/mnist_custom_estimator/pb/
 	rm -fr ./models/mnist_custom_estimator/ckpt/

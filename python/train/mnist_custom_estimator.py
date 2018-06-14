@@ -18,7 +18,6 @@ INPUT_FEATURE = 'image'
 def cnn_model_fn(features, labels, mode):
     """Model function for CNN."""
     # Input Layer
-    #input_layer = tf.reshape(features["x"], [-1, 28, 28, 1])
     input_layer = features[INPUT_FEATURE]
 
     # First convolutional Layer and pooling layer

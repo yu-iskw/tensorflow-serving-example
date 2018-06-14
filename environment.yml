@@ -17,3 +17,4 @@ dependencies:
         - grpcio-tools
         - tensorflow==1.7.0
         - tensorflow-serving-api==1.5.0
+        - flake8
