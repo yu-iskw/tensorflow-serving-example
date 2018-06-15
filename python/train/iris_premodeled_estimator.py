@@ -50,8 +50,10 @@ def main(_):
     X = iris.data
     y = iris.target
 
-    X_train, X_test = train_test_split(X, train_size=0.5)
-    y_train, y_test = train_test_split(y, train_size=0.5)
+    index_list = range(len(y))
+    index_train, index_test = train_test_split(index_list, train_size=0.8)
+    X_train, X_test = X[index_train], X[index_test]
+    y_train, y_test = y[index_train], y[index_test]
 
     # feature columns
     feature_columns = [
@@ -93,7 +95,6 @@ def main(_):
     eval_input_fn = tf.estimator.inputs.numpy_input_fn(
         x={INPUT_FEATURE: X_test},
         y=y_test,
-        # batch_size=5,
         num_epochs=1,
         shuffle=False)
     eval_spec = tf.estimator.EvalSpec(

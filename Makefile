@@ -60,7 +60,7 @@ train-iris-premodeled-estimator:
 	rm -fr ./models/iris_premodeled_estimator/pb/
 	rm -fr ./models/iris_premodeled_estimator/ckpt/
 	python python/train/iris_premodeled_estimator.py \
-			--steps 100000 \
+			--steps 100 \
 			--saved_dir ./models/iris_premodeled_estimator/pb/ \
 			--model_dir ./models/iris_premodeled_estimator/ckpt/ \
 
