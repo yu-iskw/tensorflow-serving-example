@@ -8,8 +8,8 @@ import tensorflow as tf
 tf.logging.set_verbosity(tf.logging.INFO)
 
 tf.app.flags.DEFINE_integer('steps', 10000, 'The number of steps to train a model')
-tf.app.flags.DEFINE_string('model_dir', '/tmp/mnist_premodeled_estimator', 'Dir to save a model and checkpoints')
-tf.app.flags.DEFINE_string('saved_dir', './models/', 'Dir to save a model for TF serving')
+tf.app.flags.DEFINE_string('model_dir', './models/ckpt/', 'Dir to save a model and checkpoints')
+tf.app.flags.DEFINE_string('saved_dir', './models/pb/', 'Dir to save a model for TF serving')
 FLAGS = tf.app.flags.FLAGS
 
 INPUT_FEATURE = 'image'

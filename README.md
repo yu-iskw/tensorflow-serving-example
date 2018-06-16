@@ -82,12 +82,16 @@ As you probably know, tenwoflow can handle multiple versions of served models.
 
 We have prepared for the served model.
 Now let's move on to running a docker container to server the model.
+The model serving supports not only gRPC API, but HTTP/REST API.
+The port 8500 is used for gRPC.
+Meanwhile, the port 8501 is used for RESTful API.
 ```
 # Run a docker container.
 docker run --rm  -v ${PWD}/models_for_serving:/models \
   -e MODEL_NAME='mnist' \
   -e MODEL_PATH='/models/mnist_custom_estimator' \
   -p 8500:8500  \
+  -p 8501:8501  \
   --name tensorflow-server \
   tensorflow-serving-example:0.1
 ```
