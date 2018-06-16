@@ -3,8 +3,6 @@ VERSION := 0.3
 
 .PHONY: build-docker run-docker create-conda remove-conda test
 
-MODEL_PATH := /models/mnist_custom_estimator
-
 build-docker:
 	docker build --rm -f Dockerfile -t $(NAME):$(VERSION) .
 	docker build --rm -f Dockerfile -t $(NAME):dev .
@@ -57,12 +55,10 @@ train-keras-estimator:
 			--model_dir ./models/mnist_keras_estimator/ckpt/ \
 
 train-iris-premodeled-estimator:
-	rm -fr ./models/iris_premodeled_estimator/pb/
-	rm -fr ./models/iris_premodeled_estimator/ckpt/
+	rm -fr ./models/iris_premodeled_estimator/
 	python python/train/iris_premodeled_estimator.py \
 			--steps 100 \
-			--saved_dir ./models/iris_premodeled_estimator/pb/ \
-			--model_dir ./models/iris_premodeled_estimator/ckpt/ \
+			--model_dir ./models/iris_premodeled_estimator/
 
 run-grpc-client:
 	python python/grpc_client.py \
