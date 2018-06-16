@@ -11,8 +11,8 @@ build-docker:
 
 run-docker:
 	docker run --rm  -v ${PWD}/models_for_serving:/models \
-		-e MODEL_NAME='mnist' \
-		-e MODEL_PATH=$(MODEL_PATH) \
+		-e MODEL_NAME=$(MODEL_NAME) \
+		-e MODEL_PATH=/models/$(MODEL_NAME) \
 		-p 8500:8500  \
 		-p 8501:8501  \
 		--name $(NAME) \
