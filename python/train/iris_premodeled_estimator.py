@@ -2,7 +2,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import numpy as np
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
@@ -11,7 +10,6 @@ tf.logging.set_verbosity(tf.logging.INFO)
 
 tf.app.flags.DEFINE_integer('steps', 10000, 'The number of steps to train a model')
 tf.app.flags.DEFINE_string('model_dir', './models/ckpt/', 'Dir to save a model and checkpoints')
-tf.app.flags.DEFINE_string('saved_dir', './models/pb/', 'Dir to save a model for TF serving')
 FLAGS = tf.app.flags.FLAGS
 
 INPUT_FEATURE = 'x'
@@ -24,7 +22,7 @@ def serving_input_receiver_fn():
 
     :return: ServingInputReciever
     """
-    reciever_tensors = {
+    receiver_tensors = {
         'sepal_length': tf.placeholder(tf.float32, [None, 1]),
         'sepal_width': tf.placeholder(tf.float32, [None, 1]),
         'petal_length': tf.placeholder(tf.float32, [None, 1]),
@@ -34,13 +32,13 @@ def serving_input_receiver_fn():
     # Convert give inputs to adjust to the model.
     features = {
         INPUT_FEATURE: tf.concat([
-            reciever_tensors['sepal_length'],
-            reciever_tensors['sepal_width'],
-            reciever_tensors['petal_length'],
-            reciever_tensors['petal_width']
+            receiver_tensors['sepal_length'],
+            receiver_tensors['sepal_width'],
+            receiver_tensors['petal_length'],
+            receiver_tensors['petal_width']
         ], axis=1)
     }
-    return tf.estimator.export.ServingInputReceiver(receiver_tensors=reciever_tensors,
+    return tf.estimator.export.ServingInputReceiver(receiver_tensors=receiver_tensors,
                                                     features=features)
 
 
@@ -50,12 +48,13 @@ def main(_):
     X = iris.data
     y = iris.target
 
+    # Split data into train and eval.
     index_list = range(len(y))
-    index_train, index_test = train_test_split(index_list, train_size=0.8)
-    X_train, X_test = X[index_train], X[index_test]
-    y_train, y_test = y[index_train], y[index_test]
+    index_train, index_eval = train_test_split(index_list, train_size=0.8)
+    X_train, X_eval = X[index_train], X[index_eval]
+    y_train, y_eval = y[index_train], y[index_eval]
 
-    # feature columns
+    # Define the feature columns for inputs.
     feature_columns = [
         tf.feature_column.numeric_column(INPUT_FEATURE, shape=[4])
     ]
@@ -69,13 +68,11 @@ def main(_):
         config=training_config,
         feature_columns=feature_columns,
         hidden_units=[10, 20, 10],
-        # optimizer=tf.train.AdamOptimizer(1e-4),
         n_classes=NUM_CLASSES,
-        # dropout=0.8,
-        model_dir=FLAGS.model_dir
+        model_dir=FLAGS.model_dir,
     )
 
-    # Train the model
+    # Define training spec.
     train_input_fn = tf.estimator.inputs.numpy_input_fn(
         x={INPUT_FEATURE: X_train},
         y=y_train,
@@ -86,15 +83,14 @@ def main(_):
         input_fn=train_input_fn,
         max_steps=FLAGS.steps)
 
-    # Evaluate the model and print results
+    # Define evaluating spec.
     latest_exporter = tf.estimator.LatestExporter(
         name="models",
         serving_input_receiver_fn=serving_input_receiver_fn,
-        exports_to_keep=10,
-    )
+        exports_to_keep=10)
     eval_input_fn = tf.estimator.inputs.numpy_input_fn(
-        x={INPUT_FEATURE: X_test},
-        y=y_test,
+        x={INPUT_FEATURE: X_eval},
+        y=y_eval,
         num_epochs=1,
         shuffle=False)
     eval_spec = tf.estimator.EvalSpec(
@@ -102,6 +98,8 @@ def main(_):
         throttle_secs=180,
         steps=10,
         exporters=latest_exporter)
+
+    # Train and evaluate the model.
     tf.estimator.train_and_evaluate(classifier, train_spec=train_spec, eval_spec=eval_spec)
 
 
