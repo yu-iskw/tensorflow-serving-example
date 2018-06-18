@@ -101,10 +101,10 @@ Where `MODEL_NAME` is an environment variable to identify the served model when 
 Besides, we share `./models_for_serving` between docker host and guest.
 
 ### 6. You create a gRPC client for tensorflow serving.
-`./python/grpc_client.py` is an example of gRPC client for tensorflow serving.
+`./python/grpc_mnist_client.py` is an example of gRPC client for tensorflow serving.
 ```
 TENSORFLOW_SERVER_HOST="..."
-python python/grpc_client.py \
+python python/grpc_mnist_client.py \
   --image ./data/0.png \
   --model mnist \
   --host $TENSORFLOW_SERVER_HOST
@@ -121,7 +121,7 @@ When saving a model with a custom tensorflow estimator, the signature name is `s
 On the other hand, when saving a model with a pre-modeled tensorflow estimator, the signature name is `predict` by default.
 ```
 TENSORFLOW_SERVER_HOST="..."
-python python/grpc_client.py \
+python python/grpc_mnist_client.py \
   --image ./data/0.png \
   --model mnist \
   --host $TENSORFLOW_SERVER_HOST \
