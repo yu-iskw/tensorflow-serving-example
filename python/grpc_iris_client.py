@@ -2,8 +2,6 @@ from __future__ import print_function
 
 import argparse
 import time
-import numpy as np
-from scipy.misc import imread
 
 from grpc.beta import implementations
 from tensorflow.contrib.util import make_tensor_proto
