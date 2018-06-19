@@ -24,9 +24,9 @@ git clone git@github.com:yu-iskw/tensorflow-serving-example.git
 
 ### 2. You create an anaconda environment.
 At the moment when I am creating this, versions of main components are the following.
-- tensorflow: 1.7.0
-- tensorflow-serving-api: 1.5.0
-- tensorflow-serving: 1.5.0
+- tensorflow: 1.8.0
+- tensorflow-serving-api: 1.8.0
+- tensorflow-serving: 1.8.0
 ```
 conda env create -f environment.yml
 ```
