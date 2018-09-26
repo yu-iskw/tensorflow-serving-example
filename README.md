@@ -31,6 +31,12 @@ At the moment when I am creating this, versions of main components are the follo
 conda env create -f environment.yml
 ```
 
+Once you create the environment, you need to activate this using the following command:
+
+```
+source activate tensorflow-serving-example
+```
+
 ### 3. You train a model.
 You train a model with `python/train/mnist_custom_estimator.py`.
 It is used for training a model to the MNIST task.
