@@ -82,6 +82,15 @@ Before running a docker container, you must prepare for the served model.
 # Prepare for the served model.
 mkdir -p ./models_for_serving/mnist/1
 cp -R ./models/mnist_custom_estimator/pb/1548714304/* ./models_for_serving/mnist/1
+
+# As a result of copying the files, the directory should be like following.
+models_for_serving/
+└── mnist
+    └── 1
+        ├── saved_model.pb
+        └── variables
+            ├── variables.data-00000-of-00001
+            └── variables.index
 ```
 As you probably know, tenwoflow can handle multiple versions of served models.
 `1` at the tail of `./models_for_serving/mnist/1/` means the served model version.
