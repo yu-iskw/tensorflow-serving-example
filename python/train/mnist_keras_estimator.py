@@ -4,9 +4,8 @@ from tensorflow.python import keras
 from tensorflow.python.keras import layers
 from tensorflow.python.keras import models
 
-tf.app.flags.DEFINE_integer('steps', 100, 'The number of steps to train a model')
+tf.app.flags.DEFINE_integer('max_steps', 100, 'The number of steps to train a model')
 tf.app.flags.DEFINE_string('model_dir', './models/ckpt/', 'Dir to save a model and checkpoints')
-tf.app.flags.DEFINE_string('saved_dir', './models/pb/', 'Dir to save a model for TF serving')
 FLAGS = tf.app.flags.FLAGS
 
 # This is used to specify the input parameter.
@@ -67,7 +66,7 @@ def main(_):
     # Convert the keras model to estimator
     classifier = tf.keras.estimator.model_to_estimator(keras_model=model, model_dir=FLAGS.model_dir)
 
-    # Train Model
+    # Define TrainSpec
     input_name = model.input_names[0]
     train_input_fn = tf.estimator.inputs.numpy_input_fn(
         x={input_name: train_data},
@@ -75,20 +74,33 @@ def main(_):
         batch_size=64,
         num_epochs=None,
         shuffle=True)
-    classifier.train(input_fn=train_input_fn, steps=FLAGS.steps)
+    train_spec = tf.estimator.TrainSpec(
+        input_fn=train_input_fn,
+        max_steps=FLAGS.max_steps)
 
-    # Evaluate the model and print results
+    # Define EvalSpec
+    latest_exporter = tf.estimator.LatestExporter(
+        name="models",
+        serving_input_receiver_fn=serving_input_receiver_fn,
+        exports_to_keep=10)
+    best_exporter = tf.estimator.BestExporter(
+        serving_input_receiver_fn=serving_input_receiver_fn,
+        exports_to_keep=1)
+    exporters = [latest_exporter, best_exporter]
     eval_input_fn = tf.estimator.inputs.numpy_input_fn(
         x={input_name: eval_data},
         y=eval_labels,
         num_epochs=1,
         shuffle=False)
-    eval_results = classifier.evaluate(input_fn=eval_input_fn)
-    print(eval_results)
+    eval_spec = tf.estimator.EvalSpec(
+        input_fn=eval_input_fn,
+        throttle_secs=10,
+        start_delay_secs=10,
+        steps=None,
+        exporters=exporters)
 
-    # Save the model
-    classifier.export_savedmodel(FLAGS.saved_dir,
-                                 serving_input_receiver_fn=serving_input_receiver_fn)
+    # Train and evaluate the model.
+    tf.estimator.train_and_evaluate(classifier, train_spec=train_spec, eval_spec=eval_spec)
 
 
 if __name__ == '__main__':

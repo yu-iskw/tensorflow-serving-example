@@ -45,19 +45,16 @@ train-premodeled-estimator:
 			--model_dir ./models/mnist_premodeled_estimator/ckpt/ \
 
 train-keras-estimator:
-	rm -fr ./models/mnist_keras_estimator/pb/
-	rm -fr ./models/mnist_keras_estimator/ckpt/
-	mkdir -p ./models/mnist_keras_estimator/pb/
-	mkdir -p ./models/mnist_keras_estimator/ckpt/
+	rm -fr ./models/mnist_keras_estimator/
+	mkdir -p ./models/mnist_keras_estimator/
 	python python/train/mnist_keras_estimator.py \
-			--steps 1000 \
-			--saved_dir ./models/mnist_keras_estimator/pb/ \
-			--model_dir ./models/mnist_keras_estimator/ckpt/ \
+			--max_steps 1000 \
+			--model_dir ./models/mnist_keras_estimator/
 
 train-iris-premodeled-estimator:
 	rm -fr ./models/iris_premodeled_estimator/
 	python python/train/iris_premodeled_estimator.py \
-			--steps 100 \
+			--max_steps 10000 \
 			--model_dir ./models/iris_premodeled_estimator/
 
 run-mnist-grpc-client:
