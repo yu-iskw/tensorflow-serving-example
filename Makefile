@@ -1,5 +1,5 @@
 NAME := tensorflow-serving-example
-VERSION := 0.5
+VERSION := 0.6
 
 .PHONY: build-docker run-docker create-conda remove-conda test
 

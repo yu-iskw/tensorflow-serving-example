@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y \
 
 # New installation of tensorflow-model-server
 RUN TEMP_DEB="$(mktemp)" \
-    && wget -O "$TEMP_DEB" 'http://storage.googleapis.com/tensorflow-serving-apt/pool/tensorflow-model-server-1.8.0/t/tensorflow-model-server/tensorflow-model-server_1.8.0_all.deb' \
+    && wget -O "$TEMP_DEB" 'http://storage.googleapis.com/tensorflow-serving-apt/pool/tensorflow-model-server-1.12.0/t/tensorflow-model-server/tensorflow-model-server_1.12.0_all.deb' \
     && dpkg -i "$TEMP_DEB" \
     && rm -f "$TEMP_DEB"
 
