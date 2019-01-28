@@ -57,7 +57,7 @@ train-keras-estimator:
 train-iris-premodeled-estimator:
 	rm -fr ./models/iris_premodeled_estimator/
 	python python/train/iris_premodeled_estimator.py \
-			--steps 100 \
+			--max_steps 10000 \
 			--model_dir ./models/iris_premodeled_estimator/
 
 run-mnist-grpc-client:

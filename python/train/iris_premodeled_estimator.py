@@ -8,7 +8,7 @@ import tensorflow as tf
 
 tf.logging.set_verbosity(tf.logging.INFO)
 
-tf.app.flags.DEFINE_integer('steps', 10000, 'The number of steps to train a model')
+tf.app.flags.DEFINE_integer('max_steps', 10000, 'The number of steps to train a model')
 tf.app.flags.DEFINE_string('model_dir', './models/ckpt/', 'Dir to save a model and checkpoints')
 FLAGS = tf.app.flags.FLAGS
 
@@ -77,17 +77,21 @@ def main(_):
         x={INPUT_FEATURE: X_train},
         y=y_train,
         # batch_size=5,
-        num_epochs=1,
+        num_epochs=1000,
         shuffle=True)
     train_spec = tf.estimator.TrainSpec(
         input_fn=train_input_fn,
-        max_steps=FLAGS.steps)
+        max_steps=FLAGS.max_steps)
 
     # Define evaluating spec.
     latest_exporter = tf.estimator.LatestExporter(
         name="models",
         serving_input_receiver_fn=serving_input_receiver_fn,
         exports_to_keep=10)
+    best_exporter = tf.estimator.BestExporter(
+        serving_input_receiver_fn=serving_input_receiver_fn,
+        exports_to_keep=1)
+    exporters = [latest_exporter, best_exporter]
     eval_input_fn = tf.estimator.inputs.numpy_input_fn(
         x={INPUT_FEATURE: X_eval},
         y=y_eval,
@@ -97,7 +101,7 @@ def main(_):
         input_fn=eval_input_fn,
         throttle_secs=180,
         steps=10,
-        exporters=latest_exporter)
+        exporters=exporters)
 
     # Train and evaluate the model.
     tf.estimator.train_and_evaluate(classifier, train_spec=train_spec, eval_spec=eval_spec)
