@@ -5,18 +5,17 @@ import time
 import numpy as np
 from scipy.misc import imread
 
-from grpc.beta import implementations
+import grpc
 from tensorflow.contrib.util import make_tensor_proto
 
 from tensorflow_serving.apis import predict_pb2
-from tensorflow_serving.apis import prediction_service_pb2
+from tensorflow_serving.apis import prediction_service_pb2_grpc
 
 
 def run(host, port, image, model, signature_name):
 
-    # channel = grpc.insecure_channel('%s:%d' % (host, port))
-    channel = implementations.insecure_channel(host, port)
-    stub = prediction_service_pb2.beta_create_PredictionService_stub(channel)
+    channel = grpc.insecure_channel('{host}:{port}'.format(host=host, port=port))
+    stub = prediction_service_pb2_grpc.PredictionServiceStub(channel)
 
     # Read an image
     data = imread(image)
