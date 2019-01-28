@@ -7,8 +7,8 @@ build-docker:
 	docker build --rm -f Dockerfile -t $(NAME):$(VERSION) .
 	docker build --rm -f Dockerfile -t $(NAME):dev .
 
-run-docker:
-	docker run --rm  -v ${PWD}/models_for_serving:/models \
+run-docker: check-model-name
+	docker run --rm -v ${PWD}/models_for_serving:/models \
 		-e MODEL_NAME=$(MODEL_NAME) \
 		-e MODEL_PATH=/models/$(MODEL_NAME) \
 		-p 8500:8500  \
@@ -60,8 +60,19 @@ train-iris-premodeled-estimator:
 			--steps 100 \
 			--model_dir ./models/iris_premodeled_estimator/
 
-run-grpc-client:
-	python python/grpc_client.py \
+run-mnist-grpc-client:
+	python python/grpc_mnist_client.py \
 		--image ./data/0.png \
 		--model mnist \
-		--host "$(docker-machine ip default)"
+		--host "$(shell docker-machine ip default)"
+
+run-iris-grpc-client:
+	python python/grpc_iris_client.py \
+		--model iris \
+		--host "$(shell docker-machine ip default)" \
+		--signature_name "predict"
+
+check-model-name:
+ifndef MODEL_NAME
+	$(error MODEL_NAME is not set)
+endif
